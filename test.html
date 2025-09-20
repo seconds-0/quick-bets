@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick-Bets UI Mockup</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafaf9;
+            color: #1c1917;
+            overflow-x: hidden;
+        }
+
+        .mockup-container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .phone-frame {
+            position: sticky;
+            top: 0;
+            background: #000;
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .phone-frame h1 {
+            color: #f59e0b;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .screen-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .screen.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1001;
+        }
+
+        .nav-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .nav-btn.active {
+            background: #3b82f6;
+        }
+
+        .landing {
+            background: #fafaf9;
+            padding: 60px 24px 24px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #44403c;
+            margin-bottom: 24px;
+            line-height: 28px;
+        }
+
+        .subtitle-highlight {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .description {
+            font-size: 16px;
+            color: #78716c;
+            line-height: 24px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .btn.secondary {
+            background: #3b82f6;
+        }
+
+        .btn.secondary:hover {
+            background: #2563eb;
+        }
+
+        .features {
+            margin-bottom: 48px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 20px;
+        }
+
+        .main-screen {
+            background: #fafaf9;
+            padding: 20px;
+        }
+
+        .main-header {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .main-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1c1917;
+        }
+
+        .bet-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bet-header {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .bet-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1917;
+            flex: 1;
+            margin-right: 12px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-active { background: #22c55e; }
+        .status-pending { background: #f59e0b; }
+        .status-resolved { background: #3b82f6; }
+
+        .bet-desc {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 20px;
+            margin-bottom: 12px;
+        }
+
+        .bet-footer {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bet-amount {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f59e0b;
+        }
+
+        .bet-date {
+            font-size: 12px;
+            color: #a8a29e;
+        }
+
+        .create-bet {
+            background: #fafaf9;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #78716c;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-textarea {
+            background: white;
+            border: 2px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 16px;
+            color: #1c1917;
+            width: 100%;
+        }
+
+        .form-textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .accept-bet {
+            background: #fafaf9;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .warning-box {
+            background: #fef2f2;
+            border: 4px solid #ef4444;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .warning-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 12px;
+        }
+
+        .warning-text {
+            font-size: 14px;
+            color: #991b1b;
+            line-height: 20px;
+        }
+
+        .bet-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f5f5f4;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #78716c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .summary-value {
+            font-size: 16px;
+            color: #1c1917;
+            font-weight: 500;
+        }
+
+        .fund-details {
+            background: #fef7ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .fund-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 12px;
+        }
+
+        .fund-text {
+            font-size: 14px;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .bet-details {
+            background: #fafaf9;
+            padding: 20px;
+        }
+
+        .bet-details-header {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .details-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1917;
+            margin-bottom: 16px;
+        }
+
+        .detail-row {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            color: #78716c;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #1c1917;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .action-btn.primary {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #d97706;
+        }
+
+        .action-btn.outline {
+            background: transparent;
+            color: #f59e0b;
+            border: 2px solid #f59e0b;
+        }
+
+        .action-btn.outline:hover {
+            background: #f59e0b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="mockup-container">
+        <div class="phone-frame">
+            <h1>📱 Quick-Bets UI Mockup</h1>
+        </div>
+
+        <div class="screen-container">
+            <!-- Landing Screen -->
+            <div id="landing" class="screen active landing">
+                <div class="hero">
+                    <h1 class="title">Quick-Bets</h1>
+                    <h2 class="subtitle">
+                        Private bets on Bitcoin<br>
+                        <span class="subtitle-highlight">No intermediaries</span>
+                    </h2>
+                    <p class="description">
+                        Create, fund, and resolve private bets with friends using sBTC escrow.
+                        Mutual consent first, trusted resolution when needed.
+                    </p>
+                </div>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <h3 class="feature-title">URL-Based Proposals</h3>
+                        <p class="feature-desc">
+                            Create a bet and share via URL. No simultaneous wallet connections required.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3 class="feature-title">Multi-Asset Support</h3>
+                        <p class="feature-desc">
+                            Fund with STX, BTC, or sBTC. Automatic conversion happens seamlessly.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3 class="feature-title">Mutual Consent First</h3>
+                        <p class="feature-desc">
+                            You and your betting partner can always cancel or award at any time.
+                        </p>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="showScreen('main')">Continue with Leather</button>
+                <button class="btn secondary" onclick="showScreen('main')">Continue with Xverse</button>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <span style="color: #78716c; font-size: 14px;">🔒 Non-custodial</span>
+                    <span style="color: #78716c; font-size: 14px; margin-left: 16px;">⚡ Built on Stacks</span>
+                    <span style="color: #78716c; font-size: 14px; margin-left: 16px;">🛡️ sBTC Escrow</span>
+                </div>
+            </div>
+
+            <!-- Main Screen -->
+            <div id="main" class="screen main-screen">
+                <div class="main-header">
+                    <h2 class="main-title">My Bets</h2>
+                    <button class="btn" onclick="showScreen('create')">Create New Bet</button>
+                </div>
+
+                <div style="background: #fef7ed; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+                    <h3 style="color: #1c1917; margin-bottom: 12px;">Notifications (2)</h3>
+                    <div style="padding: 8px 0; border-bottom: 1px solid #f5f5f4;">
+                        <p style="color: #44403c; font-size: 14px;">Sarah accepted your Lakers vs Warriors bet</p>
+                        <p style="color: #a8a29e; font-size: 12px; margin-top: 4px;">3/10/2024</p>
+                    </div>
+                    <div style="padding: 8px 0;">
+                        <p style="color: #44403c; font-size: 14px;">Coffee shop bet resolved - you won $25 sBTC!</p>
+                        <p style="color: #a8a29e; font-size: 12px; margin-top: 4px;">2/25/2024</p>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Active Bets</h3>
+
+                <div class="bet-card" onclick="showScreen('bet-details')">
+                    <div class="bet-header">
+                        <h4 class="bet-title">Lakers vs Warriors Game Bet</h4>
+                        <span class="status-badge status-active">Active</span>
+                    </div>
+                    <p class="bet-desc">
+                        I bet $100 sBTC that the Los Angeles Lakers will beat the Golden State Warriors in their next game on March 15th, 2024.
+                    </p>
+                    <div class="bet-footer">
+                        <span class="bet-amount">100 sBTC</span>
+                        <span class="bet-date">3/15/2024</span>
+                    </div>
+                </div>
+
+                <div class="bet-card" onclick="showScreen('bet-details')">
+                    <div class="bet-header">
+                        <h4 class="bet-title">Project Deadline Bet</h4>
+                        <span class="status-badge status-pending">Waiting</span>
+                    </div>
+                    <p class="bet-desc">
+                        I bet $50 sBTC that the React Native app will be ready for testing by March 20th, 2024.
+                    </p>
+                    <div class="bet-footer">
+                        <span class="bet-amount">50 sBTC</span>
+                        <span class="bet-date">3/20/2024</span>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 20px; font-weight: 600; margin: 32px 0 16px;">Results</h3>
+
+                <div class="bet-card" onclick="showScreen('bet-details')">
+                    <div class="bet-header">
+                        <h4 class="bet-title">Coffee Shop Bet</h4>
+                        <span class="status-badge status-resolved">Resolved</span>
+                    </div>
+                    <p class="bet-desc">
+                        I bet $25 sBTC that I can drink more coffee than you in one week without getting jittery.
+                    </p>
+                    <div class="bet-footer">
+                        <span class="bet-amount" style="color: #22c55e;">Won 25 sBTC</span>
+                        <span class="bet-date">2/25/2024</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Bet Screen -->
+            <div id="create" class="screen create-bet">
+                <div style="padding: 20px; padding-bottom: 16px;">
+                    <button class="close-btn" onclick="showScreen('main')">← Back</button>
+                    <h2 style="font-size: 18px; font-weight: 600; margin: 16px 0;">Create New Bet</h2>
+                </div>
+
+                <div style="padding: 20px; padding-top: 0;">
+                    <div class="form-group">
+                        <label class="form-label">Bet Title</label>
+                        <input type="text" class="form-input" placeholder="e.g., Lakers vs Warriors Game" value="Lakers vs Warriors Game">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Bet Description</label>
+                        <textarea class="form-textarea" placeholder="Describe the terms of your bet in detail...">
+I bet $100 sBTC that the Los Angeles Lakers will beat the Golden State Warriors in their next game on March 15th, 2024.
+                        </textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Stake Amount (sBTC)</label>
+                        <input type="number" class="form-input" placeholder="100" value="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Duration (Days)</label>
+                        <input type="number" class="form-input" placeholder="7" value="7">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Arbitrator Address (Optional)</label>
+                        <input type="text" class="form-input" placeholder="SP2J6ZY48GV1EZ5V2V5RB9MP66SW86PYKKPVPG2CT">
+                        <p style="font-size: 12px; color: #78716c; margin-top: 4px;">
+                            3rd party to resolve disputes (for notable bets)
+                        </p>
+                    </div>
+
+                    <div style="background: #f0f9ff; padding: 16px; border-radius: 12px; margin: 16px 0;">
+                        <h4 style="color: #0c4a6e; margin-bottom: 8px;">💡 Pro Tips</h4>
+                        <p style="color: #075985; font-size: 12px; line-height: 18px;">
+                            • Be specific about winning conditions<br>
+                            • Include dates, times, and clear criteria<br>
+                            • Consider edge cases and how to resolve them<br>
+                            • The more objective, the better
+                        </p>
+                    </div>
+
+                    <button class="btn" onclick="showScreen('main')" style="width: 100%; margin-bottom: 8px;">
+                        Create Bet Proposal
+                    </button>
+                    <button class="btn" onclick="showScreen('main')" style="width: 100%; background: transparent; color: #f59e0b; border: 2px solid #f59e0b;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bet Details Screen -->
+            <div id="bet-details" class="screen bet-details">
+                <div class="bet-details-header">
+                    <button class="close-btn" onclick="showScreen('main')">← Back</button>
+                    <span class="status-badge status-active">Active</span>
+                </div>
+
+                <div style="padding: 20px;">
+                    <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">
+                        Lakers vs Warriors Game Bet
+                    </h2>
+
+                    <p style="color: #44403c; line-height: 24px; margin-bottom: 24px;">
+                        I bet $100 sBTC that the Los Angeles Lakers will beat the Golden State Warriors in their next game on March 15th, 2024.
+                    </p>
+
+                    <div style="margin-bottom: 24px;">
+                        <div class="detail-row">
+                            <span class="detail-label">Stake</span>
+                            <span class="detail-value">100 sBTC</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Expires</span>
+                            <span class="detail-value">3/15/2024</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Contract</span>
+                            <span class="detail-value" style="font-family: monospace; font-size: 12px;">
+                                SP2J6ZY...PVPG2CT
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Participants</div>
+                    <div style="margin-bottom: 16px;">
+                        <div class="detail-label">Creator</div>
+                        <div class="detail-value">Alex Huth</div>
+                        <div class="detail-value" style="font-family: monospace; font-size: 12px; color: #a8a29e;">
+                            SP2J6ZY...NRV9EJ7
+                        </div>
+                    </div>
+
+                    <div class="section-title">Actions</div>
+                    <div class="action-buttons">
+                        <button class="action-btn outline" onclick="alert('Cancellation requested! Waiting for your betting partner to agree.')">
+                            I Want to Cancel
+                        </button>
+                        <button class="action-btn primary" onclick="alert('Bet awarded to Sarah Chen!')">
+                            Sarah Won
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accept Bet Screen -->
+            <div id="accept" class="screen accept-bet">
+                <div style="padding: 20px;">
+                    <div class="warning-box">
+                        <h3 class="warning-title">⚠️ Important Warning</h3>
+                        <p class="warning-text">
+                            Only accept bets from people you know and trust. Never accept bets from strangers.
+                            Consider using a small "dust" transaction first to verify the other person.
+                        </p>
+                    </div>
+
+                    <div class="bet-summary">
+                        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">
+                            Lakers vs Warriors Game Bet
+                        </h2>
+                        <p style="color: #44403c; margin-bottom: 20px;">
+                            I bet $100 sBTC that the Los Angeles Lakers will beat the Golden State Warriors in their next game on March 15th, 2024.
+                        </p>
+
+                        <div class="summary-item">
+                            <div class="summary-label">Your Stake</div>
+                            <div class="summary-value">100 sBTC</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">Their Stake</div>
+                            <div class="summary-value">100 sBTC</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">Total Escrow</div>
+                            <div class="summary-value">200 sBTC</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">Platform Fee (3%)</div>
+                            <div class="summary-value">6 sBTC</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">Expires</div>
+                            <div class="summary-value">3/15/2024</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f0f9ff; padding: 16px; border-radius: 12px; margin: 16px 0;">
+                        <h4 style="color: #0c4a6e; margin-bottom: 8px;">How This Works</h4>
+                        <p style="color: #075985; font-size: 14px; line-height: 20px;">
+                            1. Connect your wallet<br>
+                            2. Fund your stake (100 sBTC)<br>
+                            3. Wait for creator to fund their stake<br>
+                            4. Bet becomes active
+                        </p>
+                    </div>
+
+                    <button class="btn" onclick="showScreen('main')" style="width: 100%; margin-bottom: 8px;">
+                        Accept This Bet
+                    </button>
+                    <button class="btn" onclick="showScreen('main')" style="width: 100%; background: transparent; color: #f59e0b; border: 2px solid #f59e0b;">
+                        Decline
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" onclick="showScreen('landing')">Landing</button>
+            <button class="nav-btn" onclick="showScreen('main')">Main</button>
+            <button class="nav-btn" onclick="showScreen('create')">Create</button>
+            <button class="nav-btn" onclick="showScreen('bet-details')">Details</button>
+            <button class="nav-btn" onclick="showScreen('accept')">Accept</button>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show selected screen
+            document.getElementById(screenId).classList.add('active');
+
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(screenId)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Add click handlers to bet cards
+        document.querySelectorAll('.bet-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+
+        // Add hover effects to buttons
+        document.querySelectorAll('.btn, .action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+
+        // Add click handlers to navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const screenName = btn.textContent.toLowerCase().trim();
+                let screenId = 'main';
+
+                if (screenName.includes('landing')) screenId = 'landing';
+                else if (screenName.includes('create')) screenId = 'create';
+                else if (screenName.includes('details')) screenId = 'bet-details';
+                else if (screenName.includes('accept')) screenId = 'accept';
+
+                showScreen(screenId);
+            });
+        });
+
+        // Initialize with main screen active in nav
+        document.querySelector('.nav-btn').classList.add('active');
+    </script>
+</body>
+</html>
